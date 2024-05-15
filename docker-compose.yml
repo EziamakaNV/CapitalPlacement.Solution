@@ -6,3 +6,6 @@ services:
     build:
       context: .
       dockerfile: src/CapitalPlacement.API/Dockerfile
+  
+  capitalplacement.database:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
