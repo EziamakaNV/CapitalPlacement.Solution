@@ -74,5 +74,6 @@ Given extra time, several improvements could be made to enhance the functionalit
    - **Ensure All Required Questions Are Answered**: Validate that all mandatory questions are answered before accepting an application.
    - **Ensure Answers Match Question Type**: Check that the answers provided by candidates match the expected type of each question.
    - **Check Questions Exist Before Accepting an Answer**: Verify that all questions referenced in the application exist in the program before accepting the answers.
+3. **Adding Unit Tests**: Implement robust tests to ensure code stability.
 
 These enhancements would ensure that the application is more robust, user-friendly, and reliable, providing a better experience for both employers and candidates.
