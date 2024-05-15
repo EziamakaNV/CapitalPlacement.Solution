@@ -2,22 +2,12 @@
 {
     public class Question
     {
-        public string id { get; private set; }
-        public string questionText { get; private set; }
-        public QuestionType type { get; private set; }
-        public List<string> choices { get; private set; }
-        public bool enableOther { get; private set; }
-        public int maxChoices { get; private set; }
-
-        public Question(string questionTextx, QuestionType typex, List<string> choicesx = null, bool enableOtherx = false, int maxChoicesx = 0)
-        {
-            id = Guid.NewGuid().ToString();
-            questionText = questionTextx;
-            type = typex;
-            choices = choicesx ?? new List<string>();
-            enableOther = enableOtherx;
-            maxChoices = maxChoicesx;
-        }
+        public string id { get; set; }
+        public string questionText { get; set; }
+        public QuestionType type { get; set; }
+        public List<string> choices { get; set; }
+        public bool enableOther { get; set; }
+        public int maxChoices { get; set; }
     }
 
     public enum QuestionType

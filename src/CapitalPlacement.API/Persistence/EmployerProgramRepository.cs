@@ -26,8 +26,8 @@ namespace CapitalPlacement.API.Persistence
         {
             try
             {
-                ItemResponse<EmployerProgram> response = await _container.ReadItemAsync<EmployerProgram>(id,
-                     new PartitionKey(employerId));
+                ItemResponse<EmployerProgram> response = await _container.ReadItemAsync<EmployerProgram>(id: id,
+                     partitionKey: new PartitionKey(employerId));
                 return response.Resource;
             }
             catch (Exception ex)
@@ -37,9 +37,9 @@ namespace CapitalPlacement.API.Persistence
             }
         }
 
-        public async Task UpdateProgramAsync(EmployerProgram program)
+        public async Task UpdateProgramAsync(EmployerProgram program, string employerId)
         {
-            await _container.UpsertItemAsync(program, new PartitionKey("/employerid"));
+            await _container.UpsertItemAsync(program, new PartitionKey(employerId));
         }
     }
 }

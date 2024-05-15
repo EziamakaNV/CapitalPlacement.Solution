@@ -12,13 +12,14 @@ using static CapitalPlacement.API.Middleware.ExceptionMiddleware;
 
 namespace CapitalPlacement.API.Features.Program
 {
-    public static class CreateProgram
+    public static class UpdateProgram
     {
-        public sealed class Command : IRequest<Result<CreateProgramResponse>>
+        public sealed class Command : IRequest<Result>
         {
             public string title { get; set; }
             public string description { get; set; }
             public string employerid { get; set; }
+            public string programid { get; set; }
             public bool phoneInternal { get; set; }
             public bool phoneHide { get; set; }
             public bool nationalityInternal { get; set; }
@@ -34,11 +35,6 @@ namespace CapitalPlacement.API.Features.Program
             public List<QuestionDto> questions { get; set; }
         }
 
-        public sealed class CreateProgramResponse
-        {
-            public string programId { get; set; }
-        }
-
         public class Validator : AbstractValidator<Command>
         {
             public Validator()
@@ -47,7 +43,7 @@ namespace CapitalPlacement.API.Features.Program
             }
         }
 
-        public sealed class Handler : IRequestHandler<Command, Result<CreateProgramResponse>>
+        public sealed class Handler : IRequestHandler<Command, Result>
         {
             private readonly ILogger<Handler> _logger;
             private readonly IEmployerProgramRepository _employerProgramRepository;
@@ -58,46 +54,51 @@ namespace CapitalPlacement.API.Features.Program
                 _employerProgramRepository = employerProgramRepository;
             }
 
-            public async Task<Result<CreateProgramResponse>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result> Handle(Command request, CancellationToken cancellationToken)
             {
+                var program = await _employerProgramRepository.GetProgramByIdAsync(request.programid, request.employerid);
 
-                var newProgram = request.Adapt<EmployerProgram>();
-                newProgram.id = Guid.NewGuid().ToString();
-
-                await _employerProgramRepository.CreateProgramAsync(newProgram);
-
-                return Result<CreateProgramResponse>.Success(new CreateProgramResponse
+                if (program is null)
                 {
-                    programId = newProgram.id
-                });
+                    return Result.Failure(new Error("UpdateProgam.Error,","The program does not exist"));
+                }
+
+                var updatedProgram = request.Adapt<EmployerProgram>();
+                updatedProgram.id = request.programid;
+
+                await _employerProgramRepository.UpdateProgramAsync(updatedProgram, request.employerid);
+
+                return Result.Success();
             }
         }
     }
 
-    public class CreateProgramndpoint : ICarterModule
+    public class UpdateProgramndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/v1/employers/{employerid}/programs", async ([FromBody] CreateProgramDto request,
+            app.MapPut("api/v1/employers/{employerid}/programs/{programid}", async ([FromBody] UpdateProgramDto request,
                 [FromRoute] string employerid,
+                [FromRoute] string programid,
                 ISender sender) =>
             {
-                var command = request.Adapt<CreateProgram.Command>();
+                var command = request.Adapt<UpdateProgram.Command>();
                 command.employerid = employerid;
+                command.programid = programid;
 
                 var result = await sender.Send(command);
 
                 return result.Match(
-                    onSuccess: data => Results.Ok(ApiResponse<CreateProgram.CreateProgramResponse>.FromSuccess("Ok", data)),
+                    onSuccess: () => Results.NoContent(),
                     onFailure: error => Results.UnprocessableEntity(error)
                     );
             })
                 .WithTags("Programs")
                 .WithOpenApi(operation => new(operation)
                 {
-                    Summary = "Create a program"
+                    Summary = "Update a program"
                 })
-                .Produces<ApiResponse<CreateProgram.CreateProgramResponse>>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status204NoContent)
                 .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
                 .Produces<Shared.Error>(StatusCodes.Status422UnprocessableEntity)
                 .Produces<ErrorMessage>(StatusCodes.Status500InternalServerError);

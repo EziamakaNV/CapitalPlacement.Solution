@@ -6,6 +6,6 @@ namespace CapitalPlacement.API.Interfaces
     {
         Task CreateProgramAsync(EmployerProgram program);
         Task<EmployerProgram?> GetProgramByIdAsync(string id, string employerId);
-        Task UpdateProgramAsync(EmployerProgram program);
+        Task UpdateProgramAsync(EmployerProgram program, string employerId);
     }
 }

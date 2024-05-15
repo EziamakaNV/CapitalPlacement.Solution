@@ -4,7 +4,6 @@
     {
         public string title { get; set; }
         public string description { get; set; }
-        public string employerid { get; set; }
         public bool phoneInternal { get; set; }
         public bool phoneHide { get; set; }
         public bool nationalityInternal { get; set; }

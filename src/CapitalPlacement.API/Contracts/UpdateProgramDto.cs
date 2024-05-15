@@ -1,9 +1,7 @@
-﻿namespace CapitalPlacement.API.Models
+﻿namespace CapitalPlacement.API.Contracts
 {
-    public class EmployerProgram
+    public class UpdateProgramDto
     {
-        public string id { get; set; }
-        public string employerid { get; set; }
         public string title { get; set; }
         public string description { get; set; }
         public bool phoneInternal { get; set; }
@@ -18,6 +16,6 @@
         public bool dateOfBirthHide { get; set; }
         public bool genderInternal { get; set; }
         public bool genderHide { get; set; }
-        public List<Question> questions { get; set; } = new List<Question>();
+        public List<QuestionDto> questions { get; set; }
     }
 }
