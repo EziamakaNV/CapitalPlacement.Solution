@@ -64,12 +64,109 @@ namespace CapitalPlacement.API.Features.Program
                 var newProgram = request.Adapt<EmployerProgram>();
                 newProgram.id = Guid.NewGuid().ToString();
 
+                foreach(var question in newProgram.questions)
+                {
+                    question.id = Guid.NewGuid().ToString();
+                }
+
+                IEnumerable<Question> baseQuestions = CreateBaseQuestions(newProgram.phoneInternal, newProgram.phoneHide,
+                    newProgram.nationalityInternal, newProgram.nationalityHide,
+                    newProgram.currentResidenceInternal, newProgram.currentResidenceHide,
+                    newProgram.idNumberInternal, newProgram.idNumberInternal,
+                    newProgram.dateOfBirthInternal, newProgram.dateOfBirthHide,
+                    newProgram.genderInternal, newProgram.genderHide);
+
+                newProgram.questions
+                    .AddRange(baseQuestions);
+
                 await _employerProgramRepository.CreateProgramAsync(newProgram);
 
                 return Result<CreateProgramResponse>.Success(new CreateProgramResponse
                 {
                     programId = newProgram.id
                 });
+            }
+
+            private IEnumerable<Question> CreateBaseQuestions(bool phoneInternal, bool phoneHide,
+                bool nationalityInternal, bool nationalityHide,
+                bool currentResidenceInternal, bool currentResidenceHide,
+                bool idNumberInternal, bool idNumberHide,
+                bool dateOfBirthInternal, bool dateOfBirthHide,
+                bool genderInternal, bool genderHide)
+            {
+                var result = new List<Question>
+                {
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "First Name",
+                        type = QuestionType.Paragraph,
+                    },
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "Last Name",
+                        type = QuestionType.Paragraph,
+                    },
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "Email",
+                        type = QuestionType.Paragraph,
+                    },
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "Phone",
+                        type = QuestionType.Paragraph,
+                        hide = phoneHide,
+                        internalProp = phoneInternal
+                    },
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "Nationality",
+                        type = QuestionType.Paragraph,
+                        hide = nationalityHide,
+                        internalProp = nationalityInternal
+                    },
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "Current Residence",
+                        type = QuestionType.Paragraph,
+                        hide = currentResidenceHide,
+                        internalProp = currentResidenceInternal
+                    },
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "ID Number",
+                        type = QuestionType.Paragraph,
+                        hide = idNumberHide,
+                        internalProp = idNumberInternal
+                    },
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "Date of Birth",
+                        type = QuestionType.Date,
+                        hide = dateOfBirthHide,
+                        internalProp = dateOfBirthInternal
+                    },
+                    new Question
+                    {
+                        id = Guid.NewGuid().ToString(),
+                        questionText = "Gender",
+                        type = QuestionType.Dropdown,
+                        hide = genderHide,
+                        internalProp = genderInternal,
+                        choices = new() {"Male", "Female"},
+                        enableOther = false
+                    }
+                };
+
+                return result;
             }
         }
     }

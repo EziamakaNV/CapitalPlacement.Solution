@@ -19,7 +19,7 @@ var assembly = typeof(Program).Assembly;
 var cosmosConnectionString = builder.Configuration["Cosmos:ConnectionString"] ?? throw new MissingConfigException("Cosmos:ConnectionString");
 var databaseName = builder.Configuration["Database:Name"] ?? throw new MissingConfigException("Database:Name");
 var employerProgramsContainerName = "employerprograms";
-var customerApplicationsContainerName = "customerapplications";
+var candidateApplicationsContainerName = "candidateapplications";
 
 var cosmosClientOptions = new CosmosClientOptions
 {
@@ -43,12 +43,19 @@ new EmployerProgramRepository(
     sp.GetRequiredService<ILogger<EmployerProgramRepository>>()
 ));
 
+builder.Services.AddScoped<ICandidateApplicationRepository, CandidateApplicationRepository>(sp =>
+new CandidateApplicationRepository(
+    sp.GetRequiredService<CosmosClient>(),
+    databaseName,
+    candidateApplicationsContainerName,
+    sp.GetRequiredService<ILogger<CandidateApplicationRepository>>()
+));
+
 var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();
 
 // Create DB and Tables/Containers if they don't already exist
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -66,7 +73,7 @@ using (var scope = app.Services.CreateScope())
         );
 
     Container applicationContainer = await database.CreateContainerIfNotExistsAsync(
-        id: customerApplicationsContainerName,
+        id: candidateApplicationsContainerName,
         partitionKeyPath: "/programid"
         );
 }

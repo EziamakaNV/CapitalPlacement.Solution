@@ -9,5 +9,7 @@ namespace CapitalPlacement.API.Contracts
         public List<string> choices { get; set; }
         public bool enableOther { get; set; }
         public int maxChoices { get; set; }
+        public bool internalProp { get; set; }
+        public bool hide { get; set; }
     }
 }
