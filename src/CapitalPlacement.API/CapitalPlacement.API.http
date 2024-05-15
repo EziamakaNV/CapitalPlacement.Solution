@@ -1,0 +1,6 @@
+@CapitalPlacement.API_HostAddress = http://localhost:5145
+
+GET {{CapitalPlacement.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

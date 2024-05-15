@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  capitalplacement.api:
+    image: ${DOCKER_REGISTRY-}capitalplacementapi
+    build:
+      context: .
+      dockerfile: src/CapitalPlacement.API/Dockerfile
