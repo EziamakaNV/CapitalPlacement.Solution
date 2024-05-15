@@ -64,7 +64,6 @@ namespace CapitalPlacement.API.Features.Program
                 }
 
                 var updatedProgram = request.Adapt<EmployerProgram>();
-                updatedProgram.id = request.programid;
 
                 await _employerProgramRepository.UpdateProgramAsync(updatedProgram, request.employerid);
 

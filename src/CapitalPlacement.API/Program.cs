@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwaggerService();
 builder.Services.AddCarter();
+builder.Services.RegisterMapsterConfiguration();
 
 var assembly = typeof(Program).Assembly;
 var cosmosConnectionString = builder.Configuration["Cosmos:ConnectionString"] ?? throw new MissingConfigException("Cosmos:ConnectionString");

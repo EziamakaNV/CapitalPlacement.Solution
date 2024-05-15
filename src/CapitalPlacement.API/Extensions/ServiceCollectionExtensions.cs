@@ -1,4 +1,9 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using CapitalPlacement.API.Features.Program;
+using CapitalPlacement.API.Models;
+using Mapster;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace CapitalPlacement.API.Extensions
 {
@@ -22,5 +27,11 @@ namespace CapitalPlacement.API.Extensions
             });
         }
 
+        public static void RegisterMapsterConfiguration(this IServiceCollection services)
+        {
+            TypeAdapterConfig<UpdateProgram.Command, EmployerProgram>
+                .NewConfig()
+                .Map(dest => dest.id, src => src.programid);
+        }
     }
 }
